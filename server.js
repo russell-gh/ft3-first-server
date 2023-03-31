@@ -43,17 +43,28 @@ app.post("/quotes", (req, res) => {
 
 //delete a quote
 app.delete("/quotes/:id", (req, res) => {
-    console.log(req.params.id, simpsons);
     const indexOf = simpsons.findIndex(character => character.id === Number(req.params.id));
-    simpsons.splice(indexOf, 1);
-    res.send("Item deleted");
+
+    if (indexOf >= 0) {
+        simpsons.splice(indexOf, 1);
+        res.send("Item deleted");
+    } else {
+        res.send('Item not found')
+    }
+
 });
 
 //update a quote
 app.put("/quotes/:id", (req, res) => {
     const indexOf = simpsons.findIndex(character => character.id === Number(req.params.id));
-    simpsons[indexOf] = req.body;
-    res.send('It worked!')
+
+    if (indexOf >= 0) {
+        simpsons[indexOf] = req.body;
+        res.send('It worked!')
+    } else {
+        res.status(404).send("Quote not found");
+    }
+
 });
 
 //start the server
