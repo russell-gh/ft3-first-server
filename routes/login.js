@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const sha256 = require('sha256')
+const sha256 = require('sha256');
+const { getRandomString } = require("../utils/maths");
 
 router.post("/", (req, res) => {
     const { email, password } = req.body;
@@ -21,7 +22,7 @@ router.post("/", (req, res) => {
         return;
     }
 
-    const token = Math.round(Math.random() * 1000);
+    const token = getRandomString(128);
     req.users[indexOf].token = token;
     res.send(token.toString());
 });

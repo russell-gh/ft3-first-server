@@ -3,13 +3,15 @@ const rateLimit = require('express-rate-limit');
 
 const auth = (req, res, next) => {
 
+    console.log(req.headers.token.trim());
+
     if (!req.headers.token) {
         res.send('No token');
         return;
     }
 
     //check if the toke is valid
-    const indexOf = req.users.findIndex(user => user.token === Number(req.headers.token));
+    const indexOf = req.users.findIndex(user => user.token === req.headers.token.trim());
 
     if (indexOf === -1) {
         res.send('Bad token');

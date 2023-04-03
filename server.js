@@ -16,7 +16,7 @@ app.use((req, res, next) => { req.users = users; next(); });
 //routes middleware
 app.use("/secret", auth, require('./routes/secret')); //route level middleware
 app.use("/login", require('./routes/login'));
-app.use("/signup", auth, require('./routes/signup'));
+app.use("/signup", require('./routes/signup'));
 
 //start the server
 const PORT = process.env.PORT || 6001; //use what the server says or if the server says nothing, use 6001
