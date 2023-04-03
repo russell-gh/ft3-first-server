@@ -1,6 +1,27 @@
 const simpsons = require('./data.json');
 const rateLimit = require('express-rate-limit');
 
+const auth = (req, res, next) => {
+
+    if (!req.headers.token) {
+        res.send('No token');
+        return;
+    }
+
+    //check if the toke is valid
+    const indexOf = req.users.findIndex(user => user.token === Number(req.headers.token));
+
+    if (indexOf === -1) {
+        res.send('Bad token');
+        return;
+    }
+
+    //attach the index of the current user who had the token to the request
+    req.indexOf = indexOf;
+
+    next();
+}
+
 const limiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 15 minutes
     max: 5, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
@@ -25,4 +46,4 @@ const addChars = (req, res, next) => {
 }
 
 
-module.exports = { logging, addChars, limiter };
+module.exports = { logging, addChars, limiter, auth };

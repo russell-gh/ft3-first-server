@@ -1,25 +1,22 @@
 const express = require("express"); //just like import express from 'express';
 const app = express();
 
-const { logging, addChars, limiter } = require('./middleware');
+//state
+const users = [];
 
-// Apply the rate limiting middleware to all requests
-app.use(limiter);
-
-//server static files
-app.use(express.static("public"));
+const { auth } = require('./middleware');
+const { rateLimit } = require("express-rate-limit");
 
 //it provides access to the body of the request, turns body into an object
 app.use(express.json());
 
-//logging middleware
-app.use(logging);
-
-//add simpons to request middleware
-app.use(addChars);
+//attached the users to the request
+app.use((req, res, next) => { req.users = users; next(); });
 
 //routes middleware
-app.use("/", require('./quotes'));
+app.use("/secret", auth, require('./routes/secret')); //route level middleware
+app.use("/login", require('./routes/login'));
+app.use("/signup", auth, require('./routes/signup'));
 
 //start the server
 const PORT = process.env.PORT || 6001; //use what the server says or if the server says nothing, use 6001
