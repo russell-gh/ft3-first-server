@@ -1,7 +1,7 @@
 const mysql = require("mysql");
 
 const connection = mysql.createConnection({
-    database: 'ft3',
+    database: 'first-server',
     user: 'root',
     password: '',
     host: 'localhost',

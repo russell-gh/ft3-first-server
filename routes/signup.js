@@ -18,10 +18,17 @@ router.post("/", (req, res) => {
 
     //store in database
     connection.query(`INSERT INTO users
-                        (email, password)
+                        (email)
                         VALUES
-                        ("${email}", "${password}")`)
+                        ("${email}")`, (error, result) => {
+        console.log(error, result);
 
+        connection.query(`INSERT INTO logins
+                            (password, user_id)
+                            VALUES
+                            ("${req.body.password}", "${result.insertId}")`)
+
+    })
 
     res.send('It worked!');
 });

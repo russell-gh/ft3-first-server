@@ -1,27 +1,29 @@
 const simpsons = require('./data.json');
 const rateLimit = require('express-rate-limit');
+const connection = require('./mysql/connection')
 
 const auth = (req, res, next) => {
-
-    console.log(req.headers.token.trim());
-
     if (!req.headers.token) {
         res.send('No token');
         return;
     }
 
-    //check if the toke is valid
-    const indexOf = req.users.findIndex(user => user.token === req.headers.token.trim());
+    connection.query(`SELECT count(token) as count, tokens.user_id
+                        FROM tokens
+                            WHERE token = "${req.headers.token}"`,
 
-    if (indexOf === -1) {
-        res.send('Bad token');
-        return;
-    }
+        (error, results) => {
+            if (results[0].count === 0) {
+                res.send('Bad token!');
+                return;
+            }
 
-    //attach the index of the current user who had the token to the request
-    req.indexOf = indexOf;
+            req.user_id = results[0].user_id;
 
-    next();
+            next();
+        }
+    )
+
 }
 
 const limiter = rateLimit({
