@@ -20,13 +20,13 @@ router.post("/", (req, res) => {
     connection.query(`INSERT INTO users
                         (email)
                         VALUES
-                        ("${email}")`, (error, result) => {
+                        ("${email}");`, (error, result) => {
         console.log(error, result);
 
         connection.query(`INSERT INTO logins
                             (password, user_id)
                             VALUES
-                            ("${req.body.password}", "${result.insertId}")`)
+                            ("${req.body.password}", "${result.insertId}");`)
 
     })
 

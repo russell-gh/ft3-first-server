@@ -19,7 +19,7 @@ router.post("/", (req, res) => {
                         JOIN logins
                         ON users.id = logins.user_id
                         WHERE email = "${email}" 
-                        AND password = "${sha256Password}"`,
+                        AND password = "${sha256Password}";`,
         (error, results) => {
 
             console.log(error)
@@ -35,7 +35,7 @@ router.post("/", (req, res) => {
             connection.query(`INSERT INTO tokens
                                 (token, user_id)
                                     VALUES
-                                        ("${token}", "${results[0].id}")`)
+                                        ("${token}", "${results[0].id}");`)
         })
 
 });
