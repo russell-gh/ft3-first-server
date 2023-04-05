@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const sha256 = require('sha256');
 const { getRandomString } = require("../utils/maths");
-// const connection = require('../mysql/connection')''
 const mongoose = require('mongoose');
 const userSchema = require('../mongoose/schema');
 

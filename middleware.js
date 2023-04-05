@@ -1,6 +1,5 @@
 const simpsons = require('./data.json');
 const rateLimit = require('express-rate-limit');
-// const connection = require('./mysql/connection');
 const mongoose = require('mongoose');
 const connection = require('./mongoose/mongo');
 const userSchema = require('./mongoose/schema');
