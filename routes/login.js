@@ -2,9 +2,11 @@ const express = require("express");
 const router = express.Router();
 const sha256 = require('sha256');
 const { getRandomString } = require("../utils/maths");
-const connection = require('../mysql/connection')
+// const connection = require('../mysql/connection')''
+const mongoose = require('mongoose');
+const userSchema = require('../mongoose/schema');
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
     const { email, password } = req.body;
 
     //defensive checks
@@ -15,28 +17,28 @@ router.post("/", (req, res) => {
 
     const sha256Password = sha256(password + 'FT3');
 
-    connection.query(`SELECT count(email) AS count, users.id FROM users
-                        JOIN logins
-                        ON users.id = logins.user_id
-                        WHERE email = "${email}" 
-                        AND password = "${sha256Password}";`,
-        (error, results) => {
+    const User = mongoose.model("User", userSchema);
 
-            console.log(error)
+    try {
+        const result = await User.find({ email, password: sha256Password });
 
-            if (results[0].count === 0) {
-                res.send('Wrong email or password or both!');
-                return;
-            }
+        if (result.length === 0) {
+            //you are not the person
+            res.send('Wrong user or password');
+            return;
+        }
 
-            const token = getRandomString(128);
-            res.send(token.toString());
+        //you must be the user
+        const token = getRandomString(128);
 
-            connection.query(`INSERT INTO tokens
-                                (token, user_id)
-                                    VALUES
-                                        ("${token}", "${results[0].id}");`)
-        })
+        const response = await User.findOneAndUpdate({ email, password: sha256Password }, { token });
+
+        if (response) {
+            res.send(token);
+        }
+    } catch (error) {
+        res.send('Something went wrong');
+    }
 
 });
 
