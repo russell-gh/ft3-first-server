@@ -1,29 +1,28 @@
 const simpsons = require('./data.json');
 const rateLimit = require('express-rate-limit');
-const connection = require('./mysql/connection')
+// const connection = require('./mysql/connection');
+const mongoose = require('mongoose');
+const connection = require('./mongoose/mongo');
+const userSchema = require('./mongoose/schema');
 
-const auth = (req, res, next) => {
+const auth = async (req, res, next) => {
     if (!req.headers.token) {
         res.send('No token');
         return;
     }
 
-    connection.query(`SELECT count(token) as count, tokens.user_id
-                        FROM tokens
-                            WHERE token = "${req.headers.token}";`,
+    const User = mongoose.model("User", userSchema);
 
-        (error, results) => {
-            if (results[0].count === 0) {
-                res.send('Bad token!');
-                return;
-            }
+    const result = await User.find({ token: req.headers.token });
 
-            req.user_id = results[0].user_id;
+    if (result.length === 0) {
+        res.send('Bad token');
+        return;
+    }
 
-            next();
-        }
-    )
 
+    req.user_id = result[0].id;
+    next();
 }
 
 const limiter = rateLimit({
