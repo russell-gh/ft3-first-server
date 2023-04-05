@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const sha256 = require('sha256');
-// const connection = require('../mysql/connection');
 const mongoose = require('mongoose');
 const connection = require('../mongoose/mongo');
 const userSchema = require('../mongoose/schema');

@@ -7,22 +7,16 @@ const userSchema = require('../mongoose/schema');
 
 //create a secret
 router.post("/", async (req, res) => {
-
     const User = mongoose.model("User", userSchema);
-
-    console.log(req.user_id, req.body.secret);
-
-    const result = await User.findByIdAndUpdate(req.user_id, { secret: req.body.secret });
-
-    console.log(result);
-
+    await User.findByIdAndUpdate(req.user_id, { secret: req.body.secret });
     res.send('Your secret was added!');
 });
 
 //get a secret
-router.get("/", (req, res) => {
-
-
+router.get("/", async (req, res) => {
+    const User = mongoose.model("User", userSchema);
+    const results = await User.findById(req.user_id);
+    res.send(results.secret);
 });
 
 module.exports = router;
