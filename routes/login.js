@@ -15,7 +15,7 @@ router.post("/", (req, res) => {
 
     const sha256Password = sha256(password + 'FT3');
 
-    connection.query(`SELECT count(email) AS count, users.id FROM users
+    connection.query(`SELECT count(email)  AS count, users.id FROM users
                         JOIN logins
                         ON users.id = logins.user_id
                         WHERE email = "${email}" 
