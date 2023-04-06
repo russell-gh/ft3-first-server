@@ -15,7 +15,6 @@ app.use((req, res, next) => { req.users = users; next(); });
 
 //routes middleware
 app.use("/secret", auth, require('./routes/secret')); //route level middleware
-app.use("/login", require('./routes/login'));
 app.use("/signup", require('./routes/signup'));
 
 //start the server

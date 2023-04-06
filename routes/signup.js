@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const sha256 = require('sha256');
 const connection = require('../mysql/connection');
+const { addUsers, addPassword } = require("../mysql/queries");
 
 router.post("/", (req, res) => {
     const { email, password } = req.body;
@@ -17,16 +18,10 @@ router.post("/", (req, res) => {
 
 
     //store in database
-    connection.query(`INSERT INTO users
-                        (email)
-                        VALUES
-                        ("${email}")`, (error, result) => {
+    connection.query(addUsers(email), (error, result) => {
         console.log(error, result);
 
-        connection.query(`INSERT INTO logins
-                            (password, user_id)
-                            VALUES
-                            ("${req.body.password}", "${result.insertId}")`)
+        connection.query(addPassword(req.body.password, result.insertId));
 
     })
 
